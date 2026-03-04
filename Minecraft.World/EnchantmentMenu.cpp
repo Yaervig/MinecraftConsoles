@@ -21,6 +21,7 @@ EnchantmentMenu::EnchantmentMenu(shared_ptr<Inventory> inventory, Level *level, 
 	y = yt;
 	z = zt;
 	addSlot(new EnchantmentSlot(enchantSlots, 0, 21 + 4, 43 + 4));
+	//addSlot(new EnchantmentSlot(enchantSlots, 1, 40 + 4, 43 + 4));
 
 	for (int y = 0; y < 3; y++)
 	{
@@ -153,7 +154,11 @@ void EnchantmentMenu::slotsChanged() // 4J used to take a shared_ptr<Container> 
 bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 {
 	shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
-	if (costs[i] > 0 && item != NULL && (player->experienceLevel >= costs[i] || player->abilities.instabuild) )
+
+	int lvlLapisCost = (costs[i] - 1) / 10 + 1;
+
+	if (costs[i] > 0 && item != NULL && (player->experienceLevel >= costs[i] || player->abilities.instabuild) && player->inventory->getResourceItem(Item::arrow_Id) != NULL 
+		&& player->inventory->getResourceItem(Item::arrow_Id)->GetCount() >= lvlLapisCost)
 	{
 		if (!level->isClientSide)
 		{
@@ -162,10 +167,18 @@ bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 			vector<EnchantmentInstance *> *newEnchantment = EnchantmentHelper::selectEnchantment(&random, item, costs[i]);
 			if (newEnchantment != NULL)
 			{
-				player->giveExperienceLevels(-costs[i]);
+				player->giveExperienceLevels(-lvlLapisCost);
+
+				for (i = lvlLapisCost; i > 0; i--)
+					player->inventory->removeResource(Item::arrow_Id);
+
 				if (isBook) item->id = Item::enchantedBook_Id;
 				int randomIndex = isBook ? random.nextInt(newEnchantment->size()) : -1;
 				//for (EnchantmentInstance e : newEnchantment)
+
+				std::unordered_map<int, int> deleteEnchants;
+				EnchantmentHelper::setEnchantments(&deleteEnchants, item);
+
 				for (int index = 0; index < newEnchantment->size(); index++)
 				{
 					EnchantmentInstance *e = newEnchantment->at(index);

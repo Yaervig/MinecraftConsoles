@@ -724,7 +724,6 @@ const Rarity *ItemInstance::getRarity()
 bool ItemInstance::isEnchantable()
 {
 	if (!getItem()->isEnchantable(shared_from_this())) return false;
-	if (isEnchanted()) return false;
 	return true;
 }
 
