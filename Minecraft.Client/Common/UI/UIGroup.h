@@ -19,10 +19,10 @@ private:
 	UIScene_HUD *m_hud;
 
 	C4JRender::eViewportType m_viewportType;
-	
+
 	EUIGroup m_group;
 	int m_iPad;
-	
+
 	bool m_bMenuDisplayed;
 	bool m_bPauseMenuDisplayed;
 	bool m_bContainerMenuDisplayed;
@@ -37,9 +37,7 @@ private:
 public:
 	UIGroup(EUIGroup group, int iPad);
 
-#ifdef __PSVITA__
 	EUIGroup GetGroup() {return m_group;}
-#endif
 	UIComponent_Tooltips *getTooltips() { return m_tooltips; }
 	UIComponent_TutorialPopup *getTutorialPopup() { return m_tutorialPopup; }
 	UIScene_HUD *getHUD() { return m_hud; }
@@ -90,7 +88,7 @@ public:
 
 	void SetViewportType(C4JRender::eViewportType type);
 	C4JRender::eViewportType GetViewportType();
-	
+
 	virtual void HandleDLCMountingComplete();
 	virtual void HandleDLCInstalled();
 #ifdef _XBOX_ONE
@@ -101,15 +99,15 @@ public:
 	bool IsFullscreenGroup();
 
 	void handleUnlockFullVersion();
-	
-	void PrintTotalMemoryUsage(__int64 &totalStatic, __int64 &totalDynamic);
+
+	void PrintTotalMemoryUsage(int64_t &totalStatic, int64_t &totalDynamic);
 
 	unsigned int GetLayerIndex(UILayer* layerPtr);
 
 	int getCommandBufferList();
 	UIScene *FindScene(EUIScene sceneType);
 
-private:	
+private:
 	void _UpdateFocusState();
 	void updateStackStates();
 };

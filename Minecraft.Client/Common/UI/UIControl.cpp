@@ -12,6 +12,8 @@ UIControl::UIControl()
 	m_isVisible = true;
 	m_bHidden = false;
 	m_eControlType = eNoControl;
+	m_id = -1;
+	m_pParentPanel = NULL;
 }
 
 bool UIControl::setupControl(UIScene *scene, IggyValuePath *parent, const string &controlName)
@@ -42,7 +44,6 @@ bool UIControl::setupControl(UIScene *scene, IggyValuePath *parent, const string
 	return res;
 }
 
-#ifdef __PSVITA__
 void UIControl::UpdateControl()
 {
 	F64 fx, fy, fwidth, fheight;
@@ -55,7 +56,6 @@ void UIControl::UpdateControl()
 	m_width = (S32)Math::round(fwidth);
 	m_height = (S32)Math::round(fheight);
 }
-#endif // __PSVITA__
 
 void UIControl::ReInit()
 {

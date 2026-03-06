@@ -172,7 +172,7 @@ void AnvilMenu::createResult()
 
 				for(AUTO_VAR(it, additionalEnchantments->begin()); it != additionalEnchantments->end(); ++it)
 				{
-					int id = it->first;
+				  int id = it->first;
 					Enchantment *enchantment = Enchantment::enchantments[id];
 					AUTO_VAR(localIt, enchantments->find(id));
 					int current = localIt != enchantments->end() ? localIt->second : 0;
@@ -185,9 +185,9 @@ void AnvilMenu::createResult()
 
 					if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
 
-					for(AUTO_VAR(it2, enchantments->begin()); it2 != enchantments->end(); ++it2)
+					for (auto& it2 : *enchantments)
 					{
-						int other = it2->first;
+						int other = it2.first;
 						if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
 						{
 							compatible = false;
@@ -234,10 +234,10 @@ void AnvilMenu::createResult()
 					{
 						app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee*extra);
 					}
+          }
+					//delete additionalEnchantments;
 				}
-				//delete additionalEnchantments;
 			}
-		}
 
 		if (itemName.empty())
 		{
@@ -281,7 +281,7 @@ void AnvilMenu::createResult()
 		int count = 0;
 		for(AUTO_VAR(it, originalEnchantments->begin()); it != originalEnchantments->end(); ++it)
 		{
-			int id = it->first;
+			int id = it.first;
 			Enchantment *enchantment = Enchantment::enchantments[id];
 
 			int addSlotLevel = 0;

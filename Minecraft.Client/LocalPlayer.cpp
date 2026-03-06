@@ -143,39 +143,8 @@ void LocalPlayer::serverAiStep()
 {
 	Player::serverAiStep();
 	
-	if( abilities.flying && abilities.mayfly )
-	{
-		// snap y rotation for flying to nearest 90 degrees in world space
-		float fMag = sqrtf(input->xa * input->xa + input->ya * input->ya);
-		// Don't bother for tiny inputs
-		if( fMag >= 0.1f )
-		{
-			// Get angle (in player rotated space) of input controls
-			float yRotInput = atan2f(input->ya, input->xa) * (180.0f / PI);
-			// Now get in world space
-			float yRotFinal = yRotInput + yRot;
-			// Snap this to nearest 90 degrees
-			float yRotSnapped = floorf((yRotFinal / 45.0f) + 0.5f) * 45.0f;
-			// Find out how much we had to move to do this snap
-			float yRotDiff = yRotSnapped - yRotFinal;
-			// Apply the same difference to the player rotated space angle
-			float yRotInputAdjust = yRotInput + yRotDiff;
-			
-			// Calculate final x/y player-space movement required
-			this->xxa = cos(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
-			this->yya = sin(yRotInputAdjust * ( PI / 180.0f) ) * fMag;
-		}
-		else
-		{
-			this->xxa = input->xa;
-			this->yya = input->ya;
-		}
-	}
-	else
-	{
-		this->xxa = input->xa;
-		this->yya = input->ya;
-	}
+	this->xxa = input->xa;
+	this->yya = input->ya;
 	this->jumping = input->jumping;
 
 	yBobO = yBob;
@@ -251,13 +220,10 @@ void LocalPlayer::aiStep()
 	if (changingDimensionDelay > 0) changingDimensionDelay--;
 	bool wasJumping = input->jumping;
 	float runTreshold = 0.8f;
-	float sprintForward = input->sprintForward;
-
-	bool wasRunning = sprintForward >= runTreshold;
+	bool wasRunning = input->ya >= runTreshold;
 	//input->tick( dynamic_pointer_cast<Player>( shared_from_this() ) );
 	// 4J-PB - make it a localplayer
 	input->tick( this );
-	sprintForward = input->sprintForward;
 	if (isUsingItem() && !isRiding())
 	{
 		input->xa *= 0.2f;
@@ -281,25 +247,9 @@ void LocalPlayer::aiStep()
 	// world with low food, then reload it in creative.
 	if(abilities.mayfly || isAllowedToFly() ) enoughFoodToSprint = true;
 
-	bool forwardEnoughToTriggerSprint = sprintForward >= runTreshold;
-	bool forwardReturnedToDeadzone = sprintForward == 0.0f;
-	bool forwardEnoughToContinueSprint = sprintForward >= runTreshold;
-
-#ifdef _WINDOWS64
-	if (GetXboxPad() == 0 && input->usingKeyboardMovement)
-	{
-		forwardEnoughToContinueSprint = sprintForward > 0.0f;
-	}
-#endif
-
-#ifdef _WINDOWS64
-	// Keyboard sprint: Ctrl held while moving forward
-	if (GetXboxPad() == 0 && input->usingKeyboardMovement && KMInput.IsKeyDown(VK_CONTROL) && sprintForward > 0.0f &&
-		enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && onGround)
-	{
-		if (!isSprinting()) setSprinting(true);
-	}
-#endif
+	bool forwardEnoughToTriggerSprint = input->ya >= runTreshold;
+	bool forwardReturnedToDeadzone = input->ya == 0.0f;
+	bool forwardEnoughToContinueSprint = input->ya >= runTreshold;
 
 	// 4J - altered this slightly to make sure that the joypad returns to below returnTreshold in between registering two movements up to runThreshold
 	if (onGround && !isSprinting() && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness))
@@ -327,6 +277,12 @@ void LocalPlayer::aiStep()
 		}
 	}
 	if (isSneaking()) sprintTriggerTime = 0;
+#ifdef _WINDOWS64
+	if (input->sprinting && onGround && enoughFoodToSprint && !isUsingItem() && !hasEffect(MobEffect::blindness) && !isSneaking())
+	{
+		setSprinting(true);
+	}
+#endif
 	// 4J-PB - try not stopping sprint on collision
 	//if (isSprinting() && (input->ya < runTreshold || horizontalCollision || !enoughFoodToSprint))
 	if (isSprinting() && (!forwardEnoughToContinueSprint || !enoughFoodToSprint || isSneaking() || isUsingItem()))

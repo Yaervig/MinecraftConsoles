@@ -86,14 +86,6 @@ bool MultiPlayerGameMode::destroyBlock(int x, int y, int z, int face)
 
 	if (oldTile == NULL) return false;
 
-#ifdef _WINDOWS64
-	if (g_NetworkManager.IsHost())
-	{
-		level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
-		return true;
-	}
-#endif
-
 	level->levelEvent(LevelEvent::PARTICLES_DESTROY_BLOCK, x, y, z, oldTile->id + (level->getData(x, y, z) << Tile::TILE_NUM_SHIFT));
 
 	int data = level->getData(x, y, z);
@@ -134,6 +126,9 @@ void MultiPlayerGameMode::startDestroyBlock(int x, int y, int z, int face)
 
 	if (localPlayerMode->isCreative())
 	{
+		// Skip if we just broke a block — prevents double-break on single clicks
+		if (destroyDelay > 0) return;
+
 		connection->send(shared_ptr<PlayerActionPacket>( new PlayerActionPacket(PlayerActionPacket::START_DESTROY_BLOCK, x, y, z, face) ));
 		creativeDestroyBlock(minecraft, this, x, y, z, face);
 		destroyDelay = 5;
@@ -179,6 +174,7 @@ void MultiPlayerGameMode::stopDestroyBlock()
 
 	isDestroying = false;
 	destroyProgress = 0;
+	destroyDelay = 0;
 	minecraft->level->destroyTileProgress(minecraft->player->entityId, xDestroyBlock, yDestroyBlock, zDestroyBlock, -1);
 }
 
@@ -370,7 +366,9 @@ bool MultiPlayerGameMode::useItemOn(shared_ptr<Player> player, Level *level, sha
 		// are meant to be directly caused by this. If we don't do this, then the sounds never happen as the tile's use method is only called on the
 		// server, and that won't allow any sounds that are directly made, or broadcast back level events to us that would make the sound, since we are
 		// the source of the event.
-		if( ( t > 0 ) && ( !bTestUseOnly ) && player->isAllowedToUse(Tile::tiles[t]) )
+		// ---------------------------------------------------------------------------------
+		// Only call soundOnly version if we didn't already call the tile's use method above
+		if( !didSomething && ( t > 0 ) && ( !bTestUseOnly ) && player->isAllowedToUse(Tile::tiles[t]) )
 		{
 			Tile::tiles[t]->use(level, x, y, z, player, face, clickX, clickY, clickZ, true);
 		}
