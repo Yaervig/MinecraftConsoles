@@ -153,7 +153,11 @@ void EnchantmentMenu::slotsChanged() // 4J used to take a shared_ptr<Container> 
 bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 {
 	shared_ptr<ItemInstance> item = enchantSlots->getItem(0);
-	if (costs[i] > 0 && item != NULL && (player->experienceLevel >= costs[i] || player->abilities.instabuild) )
+
+	int lvlLapisCost = (costs[i] - 1) / 10 + 1;
+
+	if (costs[i] > 0 && item != NULL && (player->experienceLevel >= costs[i] || player->abilities.instabuild) && (player->inventory->getResourceItem(Item::dye_powder_Id, DyePowderItem::BLUE) != NULL 
+		&& player->inventory->getResourceItem(Item::dye_powder_Id, DyePowderItem::BLUE)->GetCount() >= lvlLapisCost) || player->abilities.instabuild)
 	{
 		if (!level->isClientSide)
 		{
@@ -162,10 +166,19 @@ bool EnchantmentMenu::clickMenuButton(shared_ptr<Player> player, int i)
 			vector<EnchantmentInstance *> *newEnchantment = EnchantmentHelper::selectEnchantment(&random, item, costs[i]);
 			if (newEnchantment != NULL)
 			{
-				player->giveExperienceLevels(-costs[i]);
+				if (!player->abilities.instabuild)
+				{
+					player->giveExperienceLevels(-lvlLapisCost);
+					player->inventory->removeResources(shared_ptr<ItemInstance>(new ItemInstance(Item::dye_powder, lvlLapisCost, DyePowderItem::BLUE)));
+				}
+
 				if (isBook) item->id = Item::enchantedBook_Id;
 				int randomIndex = isBook ? random.nextInt(newEnchantment->size()) : -1;
 				//for (EnchantmentInstance e : newEnchantment)
+
+				std::unordered_map<int, int> deleteEnchants;
+				EnchantmentHelper::setEnchantments(&deleteEnchants, item);
+
 				for (int index = 0; index < newEnchantment->size(); index++)
 				{
 					EnchantmentInstance *e = newEnchantment->at(index);

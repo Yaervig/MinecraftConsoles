@@ -434,7 +434,7 @@ void Item::staticCtor()
 	Item::spawnEgg =			(new SpawnEggItem(127))												->setIconName(L"monsterPlacer")->setDescriptionId(IDS_ITEM_MONSTER_SPAWNER)->setUseDescriptionId(IDS_DESC_MONSTER_SPAWNER);
 
 	// 4J Stu - Brought this forward
-	Item::expBottle =			(new ExperienceItem(128))											->setIconName(L"expBottle")->setDescriptionId(IDS_ITEM_EXP_BOTTLE)->setUseDescriptionId(IDS_DESC_EXP_BOTTLE);
+	Item::expBottle =			(new ExperienceItem(128))											->setBaseItemTypeAndMaterial(eBaseItemType_utensil, eMaterial_glass)->setIconName(L"expBottle")->setDescriptionId(IDS_ITEM_EXP_BOTTLE)->setUseDescriptionId(IDS_DESC_EXP_BOTTLE);
 
 	Item::record_01 =			( new RecordingItem(2000, L"13") )									->setIconName(L"record")->setDescriptionId(IDS_ITEM_RECORD_01)->setUseDescriptionId(IDS_DESC_RECORD);
 	Item::record_02 =			( new RecordingItem(2001, L"cat") )									->setIconName(L"record")->setDescriptionId(IDS_ITEM_RECORD_02)->setUseDescriptionId(IDS_DESC_RECORD);

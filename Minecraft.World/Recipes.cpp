@@ -7,6 +7,7 @@
 #include "ItemInstance.h"
 #include "net.minecraft.world.level.tile.h"
 #include "net.minecraft.world.item.crafting.h"
+#include "DyePowderItem.h"
 
 Recipes *Recipes::instance = NULL;
 ArmorRecipes *Recipes::pArmorRecipes=NULL;
@@ -619,6 +620,14 @@ Recipes::Recipes()
 		L" # ", //
 
 		L'#', Tile::glass,
+		L'T');
+
+	addShapedRecipy(new ItemInstance(Item::expBottle, 3), //
+		L"ssczciczg",
+		L"# X", //
+		L"III", //
+
+		L'#', new ItemInstance(Item::dye_powder, 1, DyePowderItem::BLUE), L'X', Item::blazePowder, L'I', new ItemInstance(Item::potion_Id, 1, 0),
 		L'T');
 
 	addShapedRecipy(new ItemInstance(Item::flowerPot, 1), //
