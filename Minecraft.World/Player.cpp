@@ -2417,15 +2417,19 @@ void Player::giveExperienceLevels(int amount)
 int Player::getXpNeededForNextLevel()
 {
 	// Update xp calculations from 1.3
+	if (experienceLevel >= 50)
+	{
+		return 10000;
+	}
 	if (experienceLevel >= 30)
 	{
-		return 17 + 15 * 3 + (experienceLevel - 30) * 7;
+		return 10 + 15 * 2 + (experienceLevel - 30) * 4;
 	}
 	if (experienceLevel >= 15)
 	{
-		return 17 + (experienceLevel - 15) * 3;
+		return 10 + (experienceLevel - 15) * 2;
 	}
-	return 17;
+	return 10;
 }
 
 /**

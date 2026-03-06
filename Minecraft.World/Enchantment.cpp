@@ -39,25 +39,25 @@ Enchantment *Enchantment::arrowInfinite = NULL;
 void Enchantment::staticCtor()
 {
 	allDamageProtection = new ProtectionEnchantment(0, FREQ_COMMON, ProtectionEnchantment::ALL);
-	fireProtection = new ProtectionEnchantment(1, FREQ_UNCOMMON, ProtectionEnchantment::FIRE);
+	fireProtection = new ProtectionEnchantment(1, FREQ_COMMON, ProtectionEnchantment::FIRE);
 	fallProtection = new ProtectionEnchantment(2, FREQ_UNCOMMON, ProtectionEnchantment::FALL);
-	explosionProtection = new ProtectionEnchantment(3, FREQ_RARE, ProtectionEnchantment::EXPLOSION);
-	projectileProtection = new ProtectionEnchantment(4, FREQ_UNCOMMON, ProtectionEnchantment::PROJECTILE);
-	drownProtection = new OxygenEnchantment(5, FREQ_RARE);
+	explosionProtection = new ProtectionEnchantment(3, FREQ_COMMON, ProtectionEnchantment::EXPLOSION);
+	projectileProtection = new ProtectionEnchantment(4, FREQ_COMMON, ProtectionEnchantment::PROJECTILE);
+	drownProtection = new OxygenEnchantment(5, FREQ_UNCOMMON);
 	waterWorker = new WaterWorkerEnchantment(6, FREQ_RARE);
-	thorns = new ThornsEnchantment(7, FREQ_VERY_RARE);
+	thorns = new ThornsEnchantment(7, FREQ_UNCOMMON);
 
 	// weapon
 	damageBonus = new DamageEnchantment(16, FREQ_COMMON, DamageEnchantment::ALL);
-	damageBonusUndead = new DamageEnchantment(17, FREQ_UNCOMMON, DamageEnchantment::UNDEAD);
-	damageBonusArthropods = new DamageEnchantment(18, FREQ_UNCOMMON, DamageEnchantment::ARTHROPODS);
+	damageBonusUndead = new DamageEnchantment(17, FREQ_COMMON, DamageEnchantment::UNDEAD);
+	damageBonusArthropods = new DamageEnchantment(18, FREQ_COMMON, DamageEnchantment::ARTHROPODS);
 	knockback = new KnockbackEnchantment(19, FREQ_UNCOMMON);
 	fireAspect = new FireAspectEnchantment(20, FREQ_RARE);
 	lootBonus = new LootBonusEnchantment(21, FREQ_RARE, EnchantmentCategory::weapon);
 
 	// digger
 	diggingBonus = new DiggingEnchantment(32, FREQ_COMMON);
-	untouching = new UntouchingEnchantment(33, FREQ_VERY_RARE);
+	untouching = new UntouchingEnchantment(33, FREQ_RARE);
 	digDurability = new DigDurabilityEnchantment(34, FREQ_UNCOMMON);
 	resourceBonus = new LootBonusEnchantment(35, FREQ_RARE, EnchantmentCategory::digger);
 

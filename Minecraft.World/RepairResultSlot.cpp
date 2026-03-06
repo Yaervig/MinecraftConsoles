@@ -20,7 +20,7 @@ bool RepairResultSlot::mayPlace(shared_ptr<ItemInstance> item)
 
 bool RepairResultSlot::mayPickup(shared_ptr<Player> player)
 {
-	return (player->abilities.instabuild || player->experienceLevel >= m_menu->cost) && (m_menu->cost > 0 && hasItem());
+	return (player->abilities.instabuild || player->experienceLevel >= m_menu->cost) && (m_menu->cost >= 0 && hasItem());
 }
 
 void RepairResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance> carried)
@@ -46,7 +46,7 @@ void RepairResultSlot::onTake(shared_ptr<Player> player, shared_ptr<ItemInstance
 	}
 	m_menu->cost = 0;
 
-	if (!player->abilities.instabuild && !m_menu->level->isClientSide && m_menu->level->getTile(xt, yt, zt) == Tile::anvil->id && player->getRandom()->nextFloat() < 0.12f)
+	if (!player->abilities.instabuild && !m_menu->level->isClientSide && m_menu->level->getTile(xt, yt, zt) == Tile::anvil->id && player->getRandom()->nextFloat() < 0.0f)
 	{
 		int data = m_menu->level->getData(xt, yt, zt);
 		int dir = data & 0x3;

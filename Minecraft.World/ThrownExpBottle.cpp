@@ -42,7 +42,7 @@ void ThrownExpBottle::onHit(HitResult *res)
 	{
 		level->levelEvent(LevelEvent::PARTICLES_POTION_SPLASH, (int) Math::round(x), (int) Math::round(y), (int) Math::round(z), 0);
 
-		int xpCount = 3 + level->random->nextInt(5) + level->random->nextInt(5);
+		int xpCount = 10;
 		while (xpCount > 0)
 		{
 			int newCount = ExperienceOrb::getExperienceValue(xpCount);
