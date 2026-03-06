@@ -114,16 +114,16 @@ void AnvilMenu::createResult()
 							switch (enchantment->getFrequency())
 							{
 							case Enchantment::FREQ_COMMON:
-								fee = 1;
-								break;
-							case Enchantment::FREQ_UNCOMMON:
 								fee = 2;
 								break;
+							case Enchantment::FREQ_UNCOMMON:
+								fee = 3;
+								break;
 							case Enchantment::FREQ_RARE:
-								fee = 4;
+								fee = 5;
 								break;
 							case Enchantment::FREQ_VERY_RARE:
-								fee = 8;
+								fee = 10;
 								break;
 							}
 
@@ -212,16 +212,16 @@ void AnvilMenu::createResult()
 					switch (enchantment->getFrequency())
 					{
 					case Enchantment::FREQ_COMMON:
-						fee = 1;
-						break;
-					case Enchantment::FREQ_UNCOMMON:
 						fee = 2;
 						break;
+					case Enchantment::FREQ_UNCOMMON:
+						fee = 3;
+						break;
 					case Enchantment::FREQ_RARE:
-						fee = 4;
+						fee = 5;
 						break;
 					case Enchantment::FREQ_VERY_RARE:
-						fee = 8;
+						fee = 10;
 						break;
 					}
 
@@ -302,16 +302,16 @@ void AnvilMenu::createResult()
 			switch (enchantment->getFrequency())
 			{
 			case Enchantment::FREQ_COMMON:
-				fee = 1;
-				break;
-			case Enchantment::FREQ_UNCOMMON:
 				fee = 2;
 				break;
+			case Enchantment::FREQ_UNCOMMON:
+				fee = 3;
+				break;
 			case Enchantment::FREQ_RARE:
-				fee = 4;
+				fee = 5;
 				break;
 			case Enchantment::FREQ_VERY_RARE:
-				fee = 8;
+				fee = 10;
 				break;
 			}
 
