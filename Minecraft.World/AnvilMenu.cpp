@@ -102,11 +102,12 @@ void AnvilMenu::createResult()
 						result->setAuxValue(resultDamage);
 						//price += max(1, repairAmount / 100) + enchantments->size();
 
-						for (AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
+						for (const auto& it : *enchantments)
+						//for (AUTO_VAR(it, enchantments->begin()); it != enchantments->end(); ++it)
 						{
-							int id = it->first;
+							int id = it.first;
 							Enchantment* enchantment = Enchantment::enchantments[id];
-							int level = it->second;
+							int level = it.second;
 							int fee = 0;
 
 							count++;
@@ -170,74 +171,77 @@ void AnvilMenu::createResult()
 
 				//unordered_map<int, int> *additionalEnchantments = EnchantmentHelper::getEnchantments(addition);
 
-				for(AUTO_VAR(it, additionalEnchantments->begin()); it != additionalEnchantments->end(); ++it)
+				if (additionalEnchantments)
 				{
-				  int id = it->first;
-					Enchantment *enchantment = Enchantment::enchantments[id];
-					AUTO_VAR(localIt, enchantments->find(id));
-					int current = localIt != enchantments->end() ? localIt->second : 0;
-					int addSlotLevel = it->second;
-					int level = it->second;
-					level = (current == level) ? level += 1 : max(level, current);
-					int extra = level - current;
-					bool compatible = enchantment->canEnchant(input);
-					bool overleveled = false;
-
-					if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
-
-					for (auto& it2 : *enchantments)
+					for (const auto& it : *additionalEnchantments)
 					{
-						int other = it2.first;
-						if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
-						{
-							compatible = false;
+						int id = it.first;
+						Enchantment* enchantment = Enchantment::enchantments[id];
+						auto localIt = enchantments->find(id);
+						int current = localIt != enchantments->end() ? localIt->second : 0;
+						int addSlotLevel = it.second;
+						int level = it.second;
+						level = (current == level) ? level += 1 : max(level, current);
+						int extra = level - current;
+						bool compatible = enchantment->canEnchant(input);
+						bool overleveled = false;
 
-							//price += extra;
-							if (DEBUG_COST)
+						if (player->abilities.instabuild || input->id == EnchantedBookItem::enchantedBook_Id) compatible = true;
+
+						for (auto& it2 : *enchantments)
+						{
+							int other = it2.first;
+							if (other != id && !enchantment->isCompatibleWith(Enchantment::enchantments[other]))
 							{
-								app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								compatible = false;
+
+								//price += extra;
+								if (DEBUG_COST)
+								{
+									app.DebugPrintf("Enchantment incompatibility fee; price is now %d (went up by %d)\n", price, extra);
+								}
 							}
 						}
-					}
 
-					if (!compatible) continue;
-					if (level > enchantment->getMaxLevel())
-					{
-						level = enchantment->getMaxLevel();
-						overleveled = true;
-					}
-					(*enchantments)[id] = level;
-					int fee = 0;
+						if (!compatible) continue;
+						if (level > enchantment->getMaxLevel())
+						{
+							level = enchantment->getMaxLevel();
+							overleveled = true;
+						}
+						(*enchantments)[id] = level;
+						int fee = 0;
 
-					switch (enchantment->getFrequency())
-					{
-					case Enchantment::FREQ_COMMON:
-						fee = 2;
-						break;
-					case Enchantment::FREQ_UNCOMMON:
-						fee = 3;
-						break;
-					case Enchantment::FREQ_RARE:
-						fee = 5;
-						break;
-					case Enchantment::FREQ_VERY_RARE:
-						fee = 10;
-						break;
-					}
+						switch (enchantment->getFrequency())
+						{
+						case Enchantment::FREQ_COMMON:
+							fee = 2;
+							break;
+						case Enchantment::FREQ_UNCOMMON:
+							fee = 3;
+							break;
+						case Enchantment::FREQ_RARE:
+							fee = 5;
+							break;
+						case Enchantment::FREQ_VERY_RARE:
+							fee = 10;
+							break;
+						}
 
-					//if (usingBook) fee = max(1, fee / 2);
+						//if (usingBook) fee = max(1, fee / 2);
 
-					//price += fee * extra;
-					if (addSlotLevel >= current && !overleveled)
-						price += fee * addSlotLevel;
-					if (DEBUG_COST)
-					{
-						app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee*extra);
+						//price += fee * extra;
+						if (addSlotLevel >= current && !overleveled)
+							price += fee * addSlotLevel;
+						if (DEBUG_COST)
+						{
+							app.DebugPrintf("Enchantment increase fee; price is now %d (went up by %d)\n", price, fee * extra);
+						}
 					}
-          }
 					//delete additionalEnchantments;
 				}
 			}
+		}
 
 		if (itemName.empty())
 		{
@@ -279,7 +283,8 @@ void AnvilMenu::createResult()
 		}
 
 		int count = 0;
-		for(AUTO_VAR(it, originalEnchantments->begin()); it != originalEnchantments->end(); ++it)
+		for (const auto& it : *originalEnchantments)
+		//for(AUTO_VAR(it, originalEnchantments->begin()); it != originalEnchantments->end(); ++it)
 		{
 			int id = it.first;
 			Enchantment *enchantment = Enchantment::enchantments[id];
@@ -288,12 +293,14 @@ void AnvilMenu::createResult()
 
 			if (additionalEnchantments != NULL)
 			{
-				AUTO_VAR(localIt, additionalEnchantments->find(id));
+				//AUTO_VAR(localIt, additionalEnchantments->find(id));
+				auto localIt = additionalEnchantments->find(id);
 				addSlotLevel = localIt != additionalEnchantments->end() ? localIt->second : 0;
 			}
-			AUTO_VAR(resultIt, enchantments->find(id));
+			//AUTO_VAR(resultIt, enchantments->find(id));
+			auto resultIt = enchantments->find(id);
 
-			int level = it->second;
+			int level = it.second;
 			int resultLevel = resultIt->second;
 			int fee = 0;
 
